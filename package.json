@@ -6,12 +6,13 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write **/*.ts",
+    "format": "prettier --write **/*.{ts,js}",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build --source-map --license licenses.txt",
+    "package": "ncc build lib/main.js --source-map -e dependency-cruiser",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "depcruise": "depcruise"
   },
   "repository": {
     "type": "git",
@@ -25,10 +26,14 @@
   ],
   "author": "Victor Chabbert",
   "license": "MIT",
+  "prettier": "@github/prettier-config",
   "dependencies": {
-    "@actions/core": "^1.2.6"
+    "@actions/core": "^1.2.6",
+    "dependency-cruiser": "^9.25.0",
+    "markdown-table": "^3.0.0"
   },
   "devDependencies": {
+    "@github/prettier-config": "0.0.4",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.37",
     "@typescript-eslint/parser": "^4.21.0",
