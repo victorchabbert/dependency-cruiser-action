@@ -4,3 +4,8 @@ author: 'Victor Chabbert'
 runs:
   using: 'node12'
   main: 'dist/index.js'
+inputs:
+  config:
+    required: true
+    description: 'Path from the git root to the dependency cruise file'
+    default: ".dependency-cruiser.js"

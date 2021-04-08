@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2016",
+    "lib": ["esnext"],
     "module": "commonjs",
     "outDir": "./lib",
     "rootDir": "./src",
@@ -12,9 +13,11 @@
     "noFallthroughCasesInSwitch": true,
     "strictPropertyInitialization": true,
     "noUncheckedIndexedAccess": true,
+    "importsNotUsedAsValues": "error",
+    "noPropertyAccessFromIndexSignature": true,
 
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     "forceConsistentCasingInFileNames": true
   },
