@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import type {IConfiguration, ICruiseOptions, IFlattenedRuleSet} from 'dependency-cruiser'
 import {
   extractBabelConfig,
@@ -146,6 +147,7 @@ export function loadConfiguration(path: string): Configuration {
       babelConfig: loadBabelConfig(depcruiseConfig)
     }
   } catch (e) {
+    core.debug(e)
     throw new ConfigurationError('Error loading configuration', e)
   }
 }

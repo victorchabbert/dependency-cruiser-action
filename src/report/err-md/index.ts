@@ -114,26 +114,10 @@ function report(pResults: ICruiseResult, pOptions?: MarkdownOptions): string {
   })
 }
 
-/**
- * Returns:
- *   output: markdown string
- *   exitCode:
- *     - 0: ok
- *     - 1: warnings
- *     - 2: errors
- */
 function markdownReporter(pResults: ICruiseResult, pOptions?: MarkdownOptions): IReporterOutput {
-  let exitCode = 0
-  if (pResults.summary.warn > 0) {
-    exitCode = 1
-  }
-  if (pResults.summary.error > 0) {
-    exitCode = 2
-  }
-
   return {
     output: report(pResults, pOptions),
-    exitCode
+    exitCode: 0
   }
 }
 

@@ -72,9 +72,7 @@ export type RenderData = {
   details: DetailsData
 }
 export function render(data: RenderData): string {
-  return `# Dependency check
-
-## Summary
+  return `### Summary
 ${summary(data.summary)}
 
 <details>
