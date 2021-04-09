@@ -21,4 +21,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          milliseconds: 1000
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          input: |
+            example
+            src
+          config: ./example/.dependency-cruiser.js
+          fail-on: none

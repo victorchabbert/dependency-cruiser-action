@@ -5,7 +5,17 @@ runs:
   using: 'node12'
   main: 'dist/index.js'
 inputs:
+  github_token:
+    required: true
+    description: "A github access token"
+  input:
+    required: true
+    description: "An unordered list of files or folders to cruise. See dependency-cruiser for the available options"
   config:
     required: true
     description: 'Path from the git root to the dependency cruise file'
     default: ".dependency-cruiser.js"
+  fail-on:
+    required: false
+    description: 'Severity condition the action should fail on. Possible values: error, warn, info, none'
+    default: 'error'

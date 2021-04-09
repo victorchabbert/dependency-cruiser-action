@@ -1,32 +1,41 @@
-import {resolve, join} from 'path'
+import {context, getOctokit} from '@actions/github'
 import * as core from '@actions/core'
-import {futureCruise, IReporterOutput} from 'dependency-cruiser'
-import {Configuration, loadConfiguration} from './configuration'
+import * as coreUtils from './utils/coreUtils'
+import {cruise} from './cruise'
+import {failOnStringToSeverityType, shouldFail, title} from './shared'
+import markdownReporter from './report/err-md'
+import {comment} from './comment'
 
-const ARRAY_OF_FILES_AND_DIRS_TO_CRUISE = ['example']
 async function run(): Promise<void> {
   try {
-    let options: Configuration
-    const config = core.getInput('config')
-    try {
-      options = loadConfiguration(config)
-    } catch (e) {
-      console.error(e)
-      core.debug(e.toString())
-      core.setFailed(e.message)
-      process.exit(1)
-    }
+    const {payload, repo} = context
+    const pr = payload.pull_request
+    const severityType = failOnStringToSeverityType(core.getInput('fail-on'))
 
-    const {cruiseOptions, webpackResolveOptions, tsConfig, babelConfig} = options
-    const cruiseResult: IReporterOutput = futureCruise(
-      ARRAY_OF_FILES_AND_DIRS_TO_CRUISE,
-      {...cruiseOptions, outputType: `plugin:${resolve(join(__dirname, './err-md'))}`},
-      webpackResolveOptions,
-      {tsConfig, babelConfig}
+    if (!pr) {
+      throw new Error('No PR found. Only pull_request workflows are supported.')
+    }
+    const octokit = getOctokit(core.getInput('github_token', {required: true}))
+
+    const reporter = cruise(
+      core.getInput('config', {required: true}),
+      coreUtils.getInputAsArray('input', {required: true})
     )
-    console.dir(cruiseResult.output, {depth: 10})
+    const output = reporter.output
+    if (typeof output === 'string') {
+      core.setFailed('Reporter output is a string. Expected an object.')
+    } else {
+      const report = markdownReporter(output, {link: `${pr['head'].repo.html_url}/blob/${pr['head'].sha}`})
+      const commentMessage = `${title}
+
+${report.output}`
+
+      comment(octokit, repo, pr, commentMessage)
+      if (severityType !== undefined && shouldFail(severityType, output.summary)) {
+        core.setFailed(`Dependency cruiser failed on '${severityType}' or above.`)
+      }
+    }
   } catch (error) {
-    console.error(error)
     core.debug(error)
     core.setFailed(error.message)
   }
