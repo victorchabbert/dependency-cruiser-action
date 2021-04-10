@@ -1,4 +1,12 @@
-import type {ICruiseResult, IFlattenedRuleSet, IReporterOutput, IViolation, SeverityType} from 'dependency-cruiser'
+import * as core from '@actions/core'
+import type {
+  ICruiseResult,
+  IFlattenedRuleSet,
+  IReporterOutput,
+  ISummary,
+  IViolation,
+  SeverityType
+} from 'dependency-cruiser'
 import {DetailsData, render, RulesSummary, markdownLink} from './template'
 
 function determineTo(violation: IViolation, linkPrefix?: string): string {
@@ -75,8 +83,11 @@ type MarkdownOptions = {
    * Link files with the provided prefix
    */
   link?: string
+  diff?: {data: ISummary; branch: string}
 }
 function report(pResults: ICruiseResult, pOptions?: MarkdownOptions): string {
+  core.debug(`report link: ${pOptions?.link}`)
+  core.debug(`report diff: ${pOptions?.diff}`)
   if (pResults.summary.violations.length === 0) {
     return ''
   }
@@ -110,6 +121,7 @@ function report(pResults: ICruiseResult, pOptions?: MarkdownOptions): string {
       ...pResults.summary,
       rules: aggregateViolationsIntoRules(pResults.summary.violations, pResults.summary.ruleSetUsed)
     },
+    diff: pOptions?.diff,
     details
   })
 }
