@@ -12,22 +12,37 @@ function plurial(count: number, singular: string, plurial: string): string {
   return `${count} ${singular}`
 }
 
+function difference(main: number, diff?: number): string {
+  if (diff === undefined) {
+    return ''
+  } else {
+    const calc = main - diff
+    const sign = Math.sign(calc)
+    const signString = sign === 0 || sign === -0 ? '' : sign > 0 ? '+' : '-'
+    return ` *(${signString}${calc})*`
+  }
+}
+
 export type RulesSummary = (IForbiddenRuleType | IRequiredRuleType) & {count: number}
 export type SummaryData = Pick<ISummary, 'error' | 'info' | 'totalCruised' | 'totalDependenciesCruised' | 'warn'> & {
   rules: RulesSummary[]
 }
-function summary(data: SummaryData): string {
+function summary(data: SummaryData, diffData?: ISummary): string {
   const {totalCruised, totalDependenciesCruised, error, info, warn, rules} = data
   const summaryDetails = [
-    plurial(totalCruised, 'module', 'modules'),
+    [plurial(totalCruised, 'module', 'modules'), difference(totalCruised, diffData?.totalCruised)],
     totalDependenciesCruised !== undefined
-      ? plurial(totalDependenciesCruised, 'dependency', 'dependencies')
+      ? [
+          plurial(totalDependenciesCruised, 'dependency', 'dependencies'),
+          difference(totalDependenciesCruised, diffData?.totalDependenciesCruised)
+        ]
       : undefined,
-    plurial(error, 'error', 'errors'),
-    plurial(warn, 'warning', 'warning'),
-    `${info} informational`
+    [plurial(error, 'error', 'errors'), difference(error, diffData?.error)],
+    [plurial(warn, 'warning', 'warning'), difference(warn, diffData?.warn)],
+    [`${info} informational`, difference(info, diffData?.info)]
   ]
     .filter(Boolean)
+    .map(item => item?.join(''))
     .join(' · ')
 
   return `**${summaryDetails}**
@@ -69,11 +84,17 @@ ${markdownTable(
 
 export type RenderData = {
   summary: SummaryData
+  diff?: {
+    data: ISummary
+    branch: string
+  }
   details: DetailsData
 }
 export function render(data: RenderData): string {
+  const diffMessage = data.diff !== undefined ? `_Comparing with ${data.diff.branch} branch_` : ''
   return `### Summary
-${summary(data.summary)}
+${summary(data.summary, data.diff?.data)}
+${diffMessage}
 
 <details>
 <summary>View details</summary>

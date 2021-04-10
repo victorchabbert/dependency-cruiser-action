@@ -26,16 +26,19 @@ jobs:
           input: |
             example
             src
-          fail-on: none
+          failOn: error
 ```
 
 ### Options (`with:`)
-| name         | type                            | required | description                                                                                                   |
-| ------------ | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| github_token | `${{ secrets.GITHUB_TOKEN }}`   | required | A github PAT                                                                                                  |
-| config       | `string`                        | required | Path to the dependency cruiser config                                                                         |
-| input        | `string`                        | required | Files or folders to cruise. Can be a single string or a list of strings separated by a carriage return (`\n`) |
-| fail-on      | `error`, `warn`, `info`, `none` | optional | Status the worflow should fail on.                                                                            |
+| name              | type                            | required | description                                                                                                   |
+| ----------------- | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| github_token      | `${{ secrets.GITHUB_TOKEN }}`   | required | A github PAT                                                                                                  |
+| config            | `string`                        | required | Path to the dependency cruiser config                                                                         |
+| input             | `string`                        | required | Files or folders to cruise. Can be a single string or a list of strings separated by a carriage return (`\n`) |
+| failOn            | `error`, `warn`, `info`, `none` | optional | Status the worflow should fail on.                                                                            |
+| skipInstall       | `true`, `false`                 | optional | Skip the package installation                                                                                 |
+| installDirectory  | `string`                        | optional | Directory to the project package.json                                                                         |
+| diff              | `true`, `false`                 | optional | Compare statistics with the target branch                                                                     |
 
 ### Fail-on
 This workflow can fail if dependency-cruiser reports at least one violation depending on the value of `fail-on`.

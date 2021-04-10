@@ -15,7 +15,16 @@ inputs:
     required: true
     description: 'Path from the git root to the dependency cruise file'
     default: ".dependency-cruiser.js"
-  fail-on:
+  failOn:
     required: false
     description: 'Severity condition the action should fail on. Possible values: error, warn, info, none'
     default: 'error'
+  skipInstall:
+    required: false
+    description: "Skip the package installation for the PR branch"
+  installDirectory:
+    required: false
+    description: "The path pointing to the package.json"
+  diff:
+    required: false
+    description: 'Compare the summary between the PR branch and the target branch'

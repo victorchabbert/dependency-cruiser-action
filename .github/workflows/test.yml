@@ -22,4 +22,6 @@ jobs:
             example
             src
           config: ./example/.dependency-cruiser.js
-          fail-on: none
+          failOn: none
+          skipInstall: true
+          diff: true

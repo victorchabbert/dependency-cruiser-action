@@ -1,3 +1,4 @@
-import { circular2 } from "./circular-2";
+import {circular2} from './circular-2'
+import './spec.test'
 
-export const circular1 = circular2;
+export const circular1 = circular2
