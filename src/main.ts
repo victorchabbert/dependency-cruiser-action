@@ -29,7 +29,6 @@ async function run(): Promise<void> {
       core.debug(`Diffing result with ${pr['base'].ref}`)
       try {
         baseReporter = await cruise(pr['base'].ref, directory, undefined, config, input)
-        core.debug('Has diff output')
       } catch (e) {
         console.error(
           'Diff failed. This may be because the configuration does not exist on the base branch or that there is an error checking out the base branch'
@@ -62,7 +61,7 @@ ${prReport.output}`
     }
   } catch (error) {
     core.debug(error)
-    core.setFailed(error.message)
+    core.setFailed(error)
   }
 }
 
