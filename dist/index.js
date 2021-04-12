@@ -362,7 +362,6 @@ function run() {
                 core.debug(`Diffing result with ${pr['base'].ref}`);
                 try {
                     baseReporter = yield cruise_1.cruise(pr['base'].ref, directory, undefined, config, input);
-                    core.debug('Has diff output');
                 }
                 catch (e) {
                     console.error('Diff failed. This may be because the configuration does not exist on the base branch or that there is an error checking out the base branch');
@@ -392,7 +391,7 @@ ${prReport.output}`;
         }
         catch (error) {
             core.debug(error);
-            core.setFailed(error.message);
+            core.setFailed(error);
         }
     });
 }
@@ -692,7 +691,10 @@ function getInputAsArray(name, options) {
 exports.getInputAsArray = getInputAsArray;
 function getInputAsBoolean(name, options) {
     const boolString = core.getInput(name, options);
-    if (boolString === 'true' || boolString === 'false') {
+    if (boolString === '') {
+        return false;
+    }
+    else if (boolString === 'true' || boolString === 'false') {
         return boolString === 'true';
     }
     throw new Error(`Input '${name}' is not a boolean. Got '${boolString}'. Expected: 'true' or 'false'`);
